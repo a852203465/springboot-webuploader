@@ -1,0 +1,13 @@
+multipart:
+  #单个文件最大
+  maxFileSize:  3000MB
+  #设置总上传数据总大小
+  maxRequestSize: 10000MB
+  uploadFolder: data/tmp
+
+#thymeleaf页面模板配置
+spring:
+    mvc:
+      view:
+        prefix: /
+        suffix: .html

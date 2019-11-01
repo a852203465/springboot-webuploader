@@ -1,6 +1,6 @@
 package com.unionman.webuploader.exception;
 
-import com.unionman.webuploader.enums.ExceptionEnum;
+import com.unionman.webuploader.enums.ResponseEnum;
 import lombok.Getter;
 
 
@@ -12,10 +12,37 @@ import lombok.Getter;
 @Getter
 public class ServiceException extends RuntimeException {
 
-    private ExceptionEnum exceptionEnum;
+    private Integer code;
 
-    public ServiceException(ExceptionEnum exceptionEnum) {
-        this.exceptionEnum = exceptionEnum;
+    private String message;
+
+    public ServiceException(Integer code, String message){
+        this.code = code;
+        this.message = message;
+    }
+
+    public ServiceException(ResponseEnum responseEnum) {
+        super(responseEnum.getMessage());
+        this.code = responseEnum.getCode();
+        this.message = responseEnum.getMessage();
+    }
+
+    public ServiceException(ResponseEnum responseEnum, String message) {
+        super(message);
+        this.code = responseEnum.getCode();
+        this.message = message;
+    }
+
+    public ServiceException(Integer code, String message, Throwable t) {
+        super(message, t);
+        this.code = code;
+        this.message = message;
+    }
+
+    public ServiceException(ResponseEnum responseEnum, Throwable t) {
+        super(responseEnum.getMessage(), t);
+        this.code = responseEnum.getCode();
+        this.message = responseEnum.getMessage();
     }
 
 }

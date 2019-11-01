@@ -3,11 +3,11 @@ package com.unionman.webuploader.service.impl;
 import com.unionman.webuploader.constants.FileConstant;
 import com.unionman.webuploader.domain.MultipartFileMerge;
 import com.unionman.webuploader.domain.MultipartFileParam;
-import com.unionman.webuploader.enums.ExceptionEnum;
+import com.unionman.webuploader.enums.ResponseEnum;
 import com.unionman.webuploader.exception.ServiceException;
-import com.unionman.webuploader.result.JsonResult;
 import com.unionman.webuploader.service.WebuploaderService;
 import com.unionman.webuploader.utils.AssertUtils;
+import com.unionman.webuploader.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
 
         try {
             if (AssertUtils.isNull(param.getFile())) {
-                throw new ServiceException(ExceptionEnum.PARAMS_VALIDATE_FAIL);
+                throw new ServiceException(ResponseEnum.PARAMS_VALIDATE_FAIL);
             }
 
             if (AssertUtils.isNull(param.getChunks()) && AssertUtils.isNull(param.getChunk())) {
@@ -55,13 +55,13 @@ public class WebuploaderServiceImpl implements WebuploaderService {
     }
 
     @Override
-    public JsonResult merge(MultipartFileMerge multipartFileMerge) {
+    public ResponseVO merge(MultipartFileMerge multipartFileMerge) {
 
         File file = new File(FileConstant.FILE_DIR + FileConstant.SEPARATOR + multipartFileMerge.getGuid());
 
         if (!file.isDirectory()) {
             log.error("Is a directory");
-            throw new ServiceException(ExceptionEnum.NOT_A_DIRECTORY);
+            throw new ServiceException(ResponseEnum.NOT_A_DIRECTORY);
 
         }
 
@@ -83,22 +83,22 @@ public class WebuploaderServiceImpl implements WebuploaderService {
                 FileUtils.deleteDirectory(file);
             }
 
-            return JsonResult.success();
+            return ResponseVO.success();
         } catch (Exception e) {
             log.error("merge {}", e.getMessage());
-            return JsonResult.fail();
+            throw new ServiceException(ResponseEnum.FILE_MERGE_FAILED);
 
         }
 
     }
 
     @Override
-    public JsonResult oldUpload(MultipartFile file) {
+    public ResponseVO oldUpload(MultipartFile file) {
 
         if (file.isEmpty()) {
 
             log.error("File does not exist");
-            throw new ServiceException(ExceptionEnum.FILE_NOT_EXIST);
+            throw new ServiceException(ResponseEnum.FILE_NOT_EXIST);
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -118,11 +118,11 @@ public class WebuploaderServiceImpl implements WebuploaderService {
 
         try {
             FileUtils.copyInputStreamToFile(file.getInputStream(), outFile);
-            return JsonResult.success();
+            return ResponseVO.success();
 
         }catch (Exception e) {
             log.error("oldUpload {}", e.getMessage());
-            return JsonResult.fail();
+            throw new ServiceException(ResponseEnum.FILE_UPLOAD_FAILED);
 
         }
     }

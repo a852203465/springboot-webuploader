@@ -2,7 +2,7 @@ package com.unionman.webuploader.service;
 
 import com.unionman.webuploader.domain.MultipartFileMerge;
 import com.unionman.webuploader.domain.MultipartFileParam;
-import com.unionman.webuploader.result.JsonResult;
+import com.unionman.webuploader.vo.ResponseVO;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -25,7 +25,7 @@ public interface WebuploaderService {
      * @date 2019/11/01 08:41:22
      * @return
      */
-    JsonResult merge(MultipartFileMerge multipartFileMerge);
+    ResponseVO merge(MultipartFileMerge multipartFileMerge);
 
     /**
      *  非分片上传文件
@@ -33,7 +33,7 @@ public interface WebuploaderService {
      * @date 2019/11/01 08:41:22
      * @return
      */
-    JsonResult oldUpload(MultipartFile file);
+    ResponseVO oldUpload(MultipartFile file);
 
 
 

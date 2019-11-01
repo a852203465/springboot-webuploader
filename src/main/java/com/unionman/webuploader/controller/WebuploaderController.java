@@ -2,23 +2,17 @@ package com.unionman.webuploader.controller;
 
 import com.unionman.webuploader.domain.MultipartFileMerge;
 import com.unionman.webuploader.domain.MultipartFileParam;
-import com.unionman.webuploader.enums.ExceptionEnum;
-import com.unionman.webuploader.exception.ServiceException;
-import com.unionman.webuploader.result.JsonResult;
+import com.unionman.webuploader.enums.ResponseEnum;
 import com.unionman.webuploader.service.WebuploaderService;
+import com.unionman.webuploader.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * 分片上传controller 层
@@ -37,7 +31,7 @@ public class WebuploaderController {
      */
     @PostMapping("/upload")
     @ResponseBody
-    public JsonResult upload(MultipartFileParam param, HttpServletRequest request) {
+    public ResponseVO upload(MultipartFileParam param, HttpServletRequest request) {
 
         log.info("upload guid {}, chunks {}, chunk {}", param.getGuid(), param.getChunks(), param.getChunk());
 
@@ -46,11 +40,10 @@ public class WebuploaderController {
         if (isMultipart) {
 
             webuploaderService.upload(param);
-            return JsonResult.success();
-
+            return ResponseVO.success();
         }
 
-        return JsonResult.fail();
+        return ResponseVO.error(ResponseEnum.SHARD_UPLOAD_FAILED);
     }
 
 
@@ -59,7 +52,7 @@ public class WebuploaderController {
      */
     @PostMapping("/merge")
     @ResponseBody
-    public JsonResult merge(@RequestBody MultipartFileMerge multipartFileMerge) {
+    public ResponseVO merge(@RequestBody MultipartFileMerge multipartFileMerge) {
 
         log.info("merge {}", multipartFileMerge.toString());
 
@@ -73,7 +66,7 @@ public class WebuploaderController {
      */
     @PostMapping("/oldUpload")
     @ResponseBody
-    public JsonResult oldUpload(@RequestParam(value = "file", required = true) MultipartFile file) {
+    public ResponseVO oldUpload(@RequestParam(value = "file", required = true) MultipartFile file) {
 
         return webuploaderService.oldUpload(file);
     }

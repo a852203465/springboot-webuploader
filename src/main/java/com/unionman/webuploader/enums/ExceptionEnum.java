@@ -13,7 +13,35 @@ public enum ExceptionEnum {
     BUSINESS_DEAL_FAIL(500, "'业务处理失败"),
     FILE_NOT_EXIST(400, "文件不存在"),
     DECRYPT_FAILED(500, "解密失败"),
-    DOWNLOAD_FAILED(500, "下载失败");
+    DOWNLOAD_FAILED(500, "下载失败"),
+    NOT_A_DIRECTORY(5001, "不是目录"),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ;
+
     /**
      * 响应状态码
      */

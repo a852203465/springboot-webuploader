@@ -6,6 +6,8 @@ import lombok.Getter;
 
 /**
  * 全部异常异常处理类
+ * @date 2019/11/01 09:43:22
+ * @author Mr.J
  */
 @Getter
 public class ServiceException extends RuntimeException {

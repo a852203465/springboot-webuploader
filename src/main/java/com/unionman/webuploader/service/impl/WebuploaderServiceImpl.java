@@ -7,6 +7,7 @@ import com.unionman.webuploader.enums.ExceptionEnum;
 import com.unionman.webuploader.exception.ServiceException;
 import com.unionman.webuploader.result.JsonResult;
 import com.unionman.webuploader.service.WebuploaderService;
+import com.unionman.webuploader.utils.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,11 @@ public class WebuploaderServiceImpl implements WebuploaderService {
     public void upload(MultipartFileParam param) {
 
         try {
-            if (param.getFile() == null) {
+            if (AssertUtils.isNull(param.getFile())) {
                 throw new ServiceException(ExceptionEnum.PARAMS_VALIDATE_FAIL);
             }
 
-            if (param.getChunks() == null && param.getChunk() == null) {
+            if (AssertUtils.isNull(param.getChunks()) && AssertUtils.isNull(param.getChunk())) {
                 param.setChunk(0);
             }
 

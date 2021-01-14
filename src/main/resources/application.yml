@@ -3,7 +3,7 @@ multipart:
   maxFileSize:  3000MB
   #设置总上传数据总大小
   maxRequestSize: 10000MB
-  uploadFolder: /data/tmp
+  uploadFolder: F:/uploads
   #1024*1024=1 048 576,5M=5 242 880
   chunkSize: 5 242 880
 
@@ -16,21 +16,5 @@ spring:
     encoding: UTF-8
     cache: false
 
-  # redis 缓存配置
-  cache:
-    redis:
-      time-to-live: 60s
-    type: redis
-  redis:
-    host: localhost
-    port: 6379
-    database: 6
-    timeout: 10000ms
-    lettuce:
-      pool:
-        max-active: 10
-        max-idle: 30
-        min-idle: 5
-        max-wait: 10000ms
 
 

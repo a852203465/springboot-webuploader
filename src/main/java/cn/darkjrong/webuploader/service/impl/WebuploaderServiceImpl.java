@@ -1,20 +1,17 @@
 package cn.darkjrong.webuploader.service.impl;
 
 import cn.darkjrong.webuploader.config.FileConfig;
-import cn.darkjrong.webuploader.constants.CacheConstant;
 import cn.darkjrong.webuploader.constants.FileConstant;
 import cn.darkjrong.webuploader.domain.MultipartFileMerge;
 import cn.darkjrong.webuploader.domain.MultipartFileParam;
 import cn.darkjrong.webuploader.enums.ResponseEnum;
 import cn.darkjrong.webuploader.exception.ServiceException;
+import cn.darkjrong.webuploader.repository.WebuploaderRepository;
 import cn.darkjrong.webuploader.service.WebuploaderService;
 import cn.darkjrong.webuploader.utils.FileUtils;
-import cn.darkjrong.webuploader.utils.RedisUtils;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +40,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
     private FileConfig fileConfig;
 
     @Autowired
-    private RedisUtils redisUtils;
+    private WebuploaderRepository webuploaderRepository;
 
     @Override
     public void upload(MultipartFileParam param) {
@@ -204,20 +201,17 @@ public class WebuploaderServiceImpl implements WebuploaderService {
 
     @Override
     public List<Integer> checkFileMd5(String md5) {
-
-        Object processingObj = redisUtils.getRedisTemplate().opsForHash().get(CacheConstant.FILE_UPLOAD_STATUS, md5);
-        if (ObjectUtil.isNull(processingObj)) {
+        if (!webuploaderRepository.hasFileUploadStatusByMd5(md5)) {
             log.error("The file has not been uploaded");
             throw new ServiceException(ResponseEnum.NO_HAVE);
         }
-        boolean processing = Convert.toBool(processingObj);
-        Object value = redisUtils.getRedisTemplate().opsForValue().get(CacheConstant.FILE_MD5_KEY + md5);
-        if (processing) {
+        if (webuploaderRepository.getFileUploadStatusByMd5(md5)) {
             log.error("File already exists");
             throw new ServiceException(ResponseEnum.IS_HAVE);
         } else {
-            if (ObjectUtil.isNotNull(value)) {
-                File confFile = new File(value.toString());
+            String value = webuploaderRepository.getFilByMd5(md5);
+            if (StrUtil.isNotBlank(value)) {
+                File confFile = new File(value);
                 byte[] completeList = FileUtil.readBytes(confFile);
                 List<Integer> missChunkList = new LinkedList<>();
                 for (int i = 0; i < completeList.length; i++) {
@@ -264,15 +258,15 @@ public class WebuploaderServiceImpl implements WebuploaderService {
 
         accessConfFile.close();
         if (isComplete == Byte.MAX_VALUE) {
-            redisUtils.getRedisTemplate().opsForHash().put(CacheConstant.FILE_UPLOAD_STATUS, param.getMd5(), Boolean.TRUE);
-            redisUtils.getRedisTemplate().opsForValue().set(CacheConstant.FILE_MD5_KEY + param.getMd5(), uploadDirPath + StrUtil.SLASH + fileName);
+            webuploaderRepository.saveUploadStatus(param.getMd5(), Boolean.TRUE);
+            webuploaderRepository.saveFile(param.getMd5(), uploadDirPath + StrUtil.SLASH + fileName);
             return true;
         } else {
-            if (!redisUtils.getRedisTemplate().opsForHash().hasKey(CacheConstant.FILE_UPLOAD_STATUS, param.getMd5())) {
-                redisUtils.getRedisTemplate().opsForHash().put(CacheConstant.FILE_UPLOAD_STATUS, param.getMd5(), Boolean.FALSE);
+            if (!webuploaderRepository.hasFileUploadStatusByMd5(param.getMd5())) {
+                webuploaderRepository.saveUploadStatus(param.getMd5(), Boolean.FALSE);
             }
-            if (!redisUtils.hasKey(CacheConstant.FILE_MD5_KEY + param.getMd5())) {
-                redisUtils.getRedisTemplate().opsForValue().set(CacheConstant.FILE_MD5_KEY + param.getMd5(), uploadDirPath + StrUtil.SLASH + fileName + FileConstant.CONF_SUFFIX);
+            if (!webuploaderRepository.hasFileByMd5(param.getMd5())) {
+                webuploaderRepository.saveFile(param.getMd5(), uploadDirPath + StrUtil.SLASH + fileName + FileConstant.CONF_SUFFIX);
             }
             return false;
         }

@@ -6,8 +6,11 @@ import cn.darkjrong.webuploader.domain.MultipartFileParam;
 import cn.darkjrong.webuploader.enums.ResponseEnum;
 import cn.darkjrong.webuploader.exception.ServiceException;
 import cn.darkjrong.webuploader.service.WebuploaderService;
+import cn.darkjrong.webuploader.utils.FileUtils;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Validator;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,11 +34,9 @@ public class WebuploaderServiceImpl implements WebuploaderService {
     public void upload(MultipartFileParam param) {
 
         try {
-            if (AssertUtils.isNull(param.getFile())) {
-                throw new ServiceException(ResponseEnum.PARAMS_VALIDATE_FAIL);
-            }
+            Assert.notNull(param.getFile(), ResponseEnum.PARAMS_VALIDATE_FAIL.getMessage());
 
-            if (AssertUtils.isNull(param.getChunks()) && AssertUtils.isNull(param.getChunk())) {
+            if (Validator.isNull(param.getChunks()) && Validator.isNull(param.getChunk())) {
                 param.setChunk(0);
             }
 
@@ -43,8 +44,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
 
             InputStream inputStream = param.getFile().getInputStream();
 
-            FileUtils.copyInputStreamToFile(inputStream, outFile);
-
+            FileUtil.writeFromStream(inputStream, outFile);
         } catch (Exception e) {
             log.error("upload {}", e.getMessage());
         }
@@ -72,11 +72,12 @@ public class WebuploaderServiceImpl implements WebuploaderService {
                     File s = new File(FileConstant.FILE_DIR + FileConstant.SEPARATOR + multipartFileMerge.getGuid(), i + FileConstant.PART_SUFFIX);
 
                     FileOutputStream destTempfos = new FileOutputStream(partFile, Boolean.TRUE);
-                    FileUtils.copyFile(s, destTempfos);
+
+                    FileUtil.writeToStream(s, destTempfos);
                     destTempfos.close();
                 }
 
-                FileUtils.deleteDirectory(file);
+                FileUtils.del(file);
             }
         } catch (Exception e) {
             log.error("merge {}", e.getMessage());
@@ -103,14 +104,12 @@ public class WebuploaderServiceImpl implements WebuploaderService {
         String path =FileConstant.FILE_DIR + FileConstant.SEPARATOR + format;
 
         File fileDirty = new File(path);
-        if (!fileDirty.exists()) {
-            fileDirty.mkdirs();
-        }
+        FileUtil.mkdir(fileDirty);
 
         File outFile = new File(path + File.separator + file.getOriginalFilename());
 
         try {
-            FileUtils.copyInputStreamToFile(file.getInputStream(), outFile);
+            FileUtil.writeFromStream(file.getInputStream(), outFile);
         }catch (Exception e) {
             log.error("oldUpload {}", e.getMessage());
             throw new ServiceException(ResponseEnum.FILE_UPLOAD_FAILED);

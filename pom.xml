@@ -44,6 +44,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- json 解析 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.75</version>
+        </dependency>
+
         <!-- 工具类 -->
         <dependency>
             <groupId>cn.hutool</groupId>

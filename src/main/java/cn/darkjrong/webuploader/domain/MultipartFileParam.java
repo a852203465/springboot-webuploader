@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.Serializable;
 
 /**
- * @description: 文件上传 分片 vo对象
+ *  文件上传 分片 vo对象
  * @date 2018/10/26 09:43
  * @author Rong.Jia
  */

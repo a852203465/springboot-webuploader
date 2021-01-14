@@ -2,7 +2,7 @@ package cn.darkjrong.webuploader.config;
 
 import cn.darkjrong.webuploader.constants.CommonConstant;
 import cn.darkjrong.webuploader.constants.FileConstant;
-import org.apache.commons.lang3.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +33,7 @@ public class FileConfig {
 
         //路径有可能限制
         String location = System.getProperty(FileConstant.USER_DIR);
-        location = StringUtils.startsWith(uploadFolder, CommonConstant.SLASH)
+        location = StrUtil.startWith(uploadFolder, CommonConstant.SLASH)
                 ? location + uploadFolder : location +FileConstant.SEPARATOR + uploadFolder;
 
         File tmpFile = new File(location);

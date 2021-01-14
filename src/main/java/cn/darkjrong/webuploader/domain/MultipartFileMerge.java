@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @description: 多部分文件上传完成，合并参数对象
+ * 多部分文件上传完成，合并参数对象
  * @date 2018/12/04 11:12
  * @author Rong.Jia
  */

@@ -6,8 +6,6 @@ import com.unionman.webuploader.domain.MultipartFileParam;
 import com.unionman.webuploader.enums.ResponseEnum;
 import com.unionman.webuploader.exception.ServiceException;
 import com.unionman.webuploader.service.WebuploaderService;
-import com.unionman.webuploader.utils.AssertUtils;
-import com.unionman.webuploader.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
@@ -55,7 +53,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
     }
 
     @Override
-    public ResponseVO merge(MultipartFileMerge multipartFileMerge) {
+    public void merge(MultipartFileMerge multipartFileMerge) {
 
         File file = new File(FileConstant.FILE_DIR + FileConstant.SEPARATOR + multipartFileMerge.getGuid());
 
@@ -82,18 +80,15 @@ public class WebuploaderServiceImpl implements WebuploaderService {
 
                 FileUtils.deleteDirectory(file);
             }
-
-            return ResponseVO.success();
         } catch (Exception e) {
             log.error("merge {}", e.getMessage());
             throw new ServiceException(ResponseEnum.FILE_MERGE_FAILED);
-
         }
 
     }
 
     @Override
-    public ResponseVO oldUpload(MultipartFile file) {
+    public void oldUpload(MultipartFile file) {
 
         if (file.isEmpty()) {
 
@@ -118,8 +113,6 @@ public class WebuploaderServiceImpl implements WebuploaderService {
 
         try {
             FileUtils.copyInputStreamToFile(file.getInputStream(), outFile);
-            return ResponseVO.success();
-
         }catch (Exception e) {
             log.error("oldUpload {}", e.getMessage());
             throw new ServiceException(ResponseEnum.FILE_UPLOAD_FAILED);

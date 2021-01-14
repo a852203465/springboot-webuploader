@@ -7,7 +7,28 @@ multipart:
 
 #thymeleaf页面模板配置
 spring:
-    mvc:
-      view:
-        prefix: /
-        suffix: .html
+  thymeleaf:
+    prefix: classpath:/templates/
+    mode: HTML
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+
+  # redis 缓存配置
+  cache:
+    redis:
+      time-to-live: 60s
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+    database: 6
+    timeout: 10000ms
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 30
+        min-idle: 5
+        max-wait: 10000ms
+
+

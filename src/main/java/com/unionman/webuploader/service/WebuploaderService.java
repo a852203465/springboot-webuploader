@@ -23,17 +23,15 @@ public interface WebuploaderService {
      * 合并文件
      * @param multipartFileMerge 合并文件信息
      * @date 2019/11/01 08:41:22
-     * @return
      */
-    ResponseVO merge(MultipartFileMerge multipartFileMerge);
+    void merge(MultipartFileMerge multipartFileMerge);
 
     /**
      *  非分片上传文件
      * @param file 文件
      * @date 2019/11/01 08:41:22
-     * @return
      */
-    ResponseVO oldUpload(MultipartFile file);
+    void oldUpload(MultipartFile file);
 
 
 

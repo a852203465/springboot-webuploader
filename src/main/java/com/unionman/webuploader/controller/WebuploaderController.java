@@ -56,7 +56,9 @@ public class WebuploaderController {
 
         log.info("merge {}", multipartFileMerge.toString());
 
-        return webuploaderService.merge(multipartFileMerge);
+        webuploaderService.merge(multipartFileMerge);
+
+        return ResponseVO.success();
     }
 
     /**
@@ -68,7 +70,9 @@ public class WebuploaderController {
     @ResponseBody
     public ResponseVO oldUpload(@RequestParam(value = "file", required = true) MultipartFile file) {
 
-        return webuploaderService.oldUpload(file);
+        webuploaderService.oldUpload(file);
+
+        return ResponseVO.success();
     }
 
 

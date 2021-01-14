@@ -26,7 +26,10 @@ public class PageController {
         return "index";
     }
 
-
+    @GetMapping("/breakpointUploader")
+    public String breakpointUploader() {
+        return "breakpointUploader";
+    }
 
 
 

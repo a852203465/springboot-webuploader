@@ -21,7 +21,6 @@ import java.nio.file.Files;
 @Configuration
 public class FileConfig {
 
-
     /**
      * 文件上传配置
      * @return MultipartConfigElement

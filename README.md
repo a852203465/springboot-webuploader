@@ -1,7 +1,7 @@
 # webuploader
 
 #### 介绍
-基于webuploader的分片上传(后台springbooot)
+基于webuploader的分片上传(后台spring-boot)
 
 <a name="需要知识点"></a>
 ### 需要知识点
@@ -13,7 +13,7 @@
 ### 启动项目
 
 1. main方法直接运行：  
-(1)找到App启动类（com.unionman.webuploader包下）  
+(1)找到App启动类（cn.darkjrong.webuploader包下）  
 (2)执行main方法。  
 (3)然后用浏览器访问：<http://localhost:8080>
 

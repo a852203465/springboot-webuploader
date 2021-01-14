@@ -29,6 +29,8 @@ public class FileConstant {
 
     public static final String PART_SUFFIX = ".part";
 
+    public static final String TMP_SUFFIX = "_tmp";
 
+    public static final String CONF_SUFFIX = ".conf";
 
 }

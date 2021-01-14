@@ -30,11 +30,13 @@ public enum ResponseEnum {
     DOWNLOAD_FAILED(1004, "下载失败"),
     NOT_A_DIRECTORY(1005, "不是目录"),
     FILE_NOT_EXIST(1006, "文件不存在"),
-    REQUEST_PARAMETER_FORMAT_IS_INCORRECT(1000, "请求参数格式不正确"),
-    THE_PARAMETER_TYPE_IS_INCORRECT(1016, "参数类型不正确"),
-    THE_SHARDING_FILE_CANNOT_BE_EMPTY(1006, "分片文件不能为空"),
-
-
+    REQUEST_PARAMETER_FORMAT_IS_INCORRECT(1007, "请求参数格式不正确"),
+    THE_PARAMETER_TYPE_IS_INCORRECT(1008, "参数类型不正确"),
+    THE_SHARDING_FILE_CANNOT_BE_EMPTY(1009, "分片文件不能为空"),
+    MD5_VALIDATION_FAILED(1010, "MD5 validation failed"),
+    NO_HAVE(1011, "该文件没有上传过"),
+    IS_HAVE(1012, "文件已存在"),
+    ING_HAVE(1013, "该文件上传了一部分"),
 
 
 

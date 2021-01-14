@@ -4,12 +4,17 @@ import cn.darkjrong.webuploader.enums.ResponseEnum;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import sun.misc.Cleaner;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -83,6 +88,37 @@ public class FileUtils {
                     chunkChannel.transferTo(0, chunkChannel.size(), fileChannel);
                 }
             }
+        }
+    }
+
+    /**
+     * 在MappedByteBuffer释放后再对它进行读操作的话就会引发jvm crash，在并发情况下很容易发生
+     * 正在释放时另一个线程正开始读取，于是crash就发生了。所以为了系统稳定性释放前一般需要检 查是否还有线程在读或写
+     *
+     * @param mappedByteBuffer
+     */
+    public static void freedMappedByteBuffer(final MappedByteBuffer mappedByteBuffer) {
+        try {
+
+            if (mappedByteBuffer == null) {
+                return;
+            }
+
+            mappedByteBuffer.force();
+            AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+                try {
+                    Method cleanerMethod = mappedByteBuffer.getClass().getMethod("cleaner");
+                    cleanerMethod.setAccessible(true);
+                    Cleaner cleaner = (Cleaner) cleanerMethod.invoke(mappedByteBuffer, new Object[0]);
+                    cleaner.clean();
+                } catch (Exception e) {
+                    log.error("clean MappedByteBuffer error {}", e.getMessage());
+                }
+                return null;
+            });
+
+        } catch (Exception e) {
+            log.error("freedMappedByteBuffer {}", e.getMessage());
         }
     }
 

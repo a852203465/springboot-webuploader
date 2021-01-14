@@ -35,6 +35,17 @@ public class MultipartFileParam implements Serializable {
      */
     private MultipartFile file;
 
+    /**
+     * MD5
+     */
+    private String md5;
+
+    /**
+     * 文件名
+     */
+    private String name;
+
+
 
 
 }

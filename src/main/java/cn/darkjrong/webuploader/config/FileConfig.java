@@ -1,9 +1,9 @@
 package cn.darkjrong.webuploader.config;
 
-import cn.darkjrong.webuploader.constants.CommonConstant;
 import cn.darkjrong.webuploader.constants.FileConstant;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,24 +17,27 @@ import java.io.File;
  * @author Mr.J
  * @date 2019/10/31 21:59
  */
+@Data
 @Configuration
+@ConfigurationProperties(prefix = "multipart")
 public class FileConfig {
+
+    private String maxFileSize;
+    private String maxRequestSize;
+    private String uploadFolder;
+    private Long chunkSize;
 
     /**
      * 文件上传配置
      * @return MultipartConfigElement
      */
     @Bean
-    public MultipartConfigElement multipartConfigElement(
-            @Value("${multipart.maxFileSize}") String maxFileSize,
-            @Value("${multipart.maxRequestSize}") String maxRequestSize,
-            @Value("${multipart.uploadFolder}") String uploadFolder) {
+    public MultipartConfigElement multipartConfigElement() {
+
         MultipartConfigFactory factory = new MultipartConfigFactory();
 
         //路径有可能限制
-        String location = System.getProperty(FileConstant.USER_DIR);
-        location = StrUtil.startWith(uploadFolder, CommonConstant.SLASH)
-                ? location + uploadFolder : location +FileConstant.SEPARATOR + uploadFolder;
+        String location = StrUtil.startWith(uploadFolder, StrUtil.SLASH) ? uploadFolder : FileConstant.SEPARATOR + uploadFolder;
 
         File tmpFile = new File(location);
         if (!tmpFile.exists()) {

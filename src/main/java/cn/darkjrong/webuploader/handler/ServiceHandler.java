@@ -43,7 +43,7 @@ public class ServiceHandler {
 
         log.error("serviceExceptionHandler  {}", e.getMessage());
 
-        return ResponseVO.error(e.getMessage());
+        return ResponseVO.error(e.getCode(), e.getMessage());
 
     }
 

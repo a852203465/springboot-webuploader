@@ -8,11 +8,16 @@ import cn.darkjrong.webuploader.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 分片上传controller 层
@@ -75,7 +80,43 @@ public class WebuploaderController {
         return ResponseVO.success();
     }
 
+    /**
+     * 秒传判断，断点判断
+     * @param  md5 md5
+     * @return
+     */
+    @RequestMapping(value = "/checkFileMd5", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseVO checkFileMd5(String md5) {
 
+        log.info("checkFileMd5 {}", md5);
+
+        List<Integer> checkFileMd5 = webuploaderService.checkFileMd5(md5);
+
+        return ResponseVO.error(ResponseEnum.ING_HAVE, checkFileMd5);
+    }
+
+    /**
+     * 秒传，断点 上传
+     */
+    @RequestMapping(value = "/breakpointUpload", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseVO breakpointUpload(MultipartFileParam param, HttpServletRequest request) {
+
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+
+        if (isMultipart) {
+            // 方法1
+//            webuploaderService.breakpointUploadFileRandomAccessFile(param);
+
+            // 方法2
+             webuploaderService.breakpointUploadFileByMappedByteBuffer(param);
+
+            return ResponseVO.success();
+        }
+
+        return ResponseVO.error(ResponseEnum.SHARD_UPLOAD_FAILED);
+    }
 
 
 

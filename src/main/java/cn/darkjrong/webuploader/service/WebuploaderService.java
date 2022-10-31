@@ -1,10 +1,9 @@
 package cn.darkjrong.webuploader.service;
 
-import cn.darkjrong.webuploader.domain.MultipartFileMerge;
-import cn.darkjrong.webuploader.domain.MultipartFileParam;
+import cn.darkjrong.webuploader.common.domain.MultipartFileMerge;
+import cn.darkjrong.webuploader.common.domain.MultipartFileParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

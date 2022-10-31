@@ -1,22 +1,18 @@
 package cn.darkjrong.webuploader.controller;
 
 import cn.darkjrong.webuploader.service.WebuploaderService;
-import cn.darkjrong.webuploader.domain.MultipartFileMerge;
-import cn.darkjrong.webuploader.domain.MultipartFileParam;
-import cn.darkjrong.webuploader.enums.ResponseEnum;
-import cn.darkjrong.webuploader.vo.ResponseVO;
+import cn.darkjrong.webuploader.common.domain.MultipartFileMerge;
+import cn.darkjrong.webuploader.common.domain.MultipartFileParam;
+import cn.darkjrong.webuploader.common.enums.ResponseEnum;
+import cn.darkjrong.webuploader.common.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

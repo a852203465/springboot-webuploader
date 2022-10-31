@@ -1,14 +1,14 @@
 package cn.darkjrong.webuploader.service.impl;
 
-import cn.darkjrong.webuploader.config.FileConfig;
-import cn.darkjrong.webuploader.constants.FileConstant;
-import cn.darkjrong.webuploader.domain.MultipartFileMerge;
-import cn.darkjrong.webuploader.domain.MultipartFileParam;
-import cn.darkjrong.webuploader.enums.ResponseEnum;
-import cn.darkjrong.webuploader.exception.ServiceException;
+import cn.darkjrong.webuploader.common.config.FileUploadConfig;
+import cn.darkjrong.webuploader.common.constants.FileConstant;
+import cn.darkjrong.webuploader.common.domain.MultipartFileMerge;
+import cn.darkjrong.webuploader.common.domain.MultipartFileParam;
+import cn.darkjrong.webuploader.common.enums.ResponseEnum;
+import cn.darkjrong.webuploader.common.exception.WebUploaderException;
 import cn.darkjrong.webuploader.repository.WebuploaderRepository;
 import cn.darkjrong.webuploader.service.WebuploaderService;
-import cn.darkjrong.webuploader.utils.FileUtils;
+import cn.darkjrong.webuploader.common.utils.FileUtils;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Validator;
@@ -37,7 +37,7 @@ import java.util.List;
 public class WebuploaderServiceImpl implements WebuploaderService {
 
     @Autowired
-    private FileConfig fileConfig;
+    private FileUploadConfig fileConfig;
 
     @Autowired
     private WebuploaderRepository webuploaderRepository;
@@ -69,7 +69,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
 
         if (!file.isDirectory()) {
             log.error("Is a directory");
-            throw new ServiceException(ResponseEnum.NOT_A_DIRECTORY);
+            throw new WebUploaderException(ResponseEnum.NOT_A_DIRECTORY);
 
         }
 
@@ -93,7 +93,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
             }
         } catch (Exception e) {
             log.error("merge {}", e.getMessage());
-            throw new ServiceException(ResponseEnum.FILE_MERGE_FAILED);
+            throw new WebUploaderException(ResponseEnum.FILE_MERGE_FAILED);
         }
 
     }
@@ -104,7 +104,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
         if (file.isEmpty()) {
 
             log.error("File does not exist");
-            throw new ServiceException(ResponseEnum.FILE_NOT_EXIST);
+            throw new WebUploaderException(ResponseEnum.FILE_NOT_EXIST);
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -124,7 +124,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
             FileUtil.writeFromStream(file.getInputStream(), outFile);
         }catch (Exception e) {
             log.error("oldUpload {}", e.getMessage());
-            throw new ServiceException(ResponseEnum.FILE_UPLOAD_FAILED);
+            throw new WebUploaderException(ResponseEnum.FILE_UPLOAD_FAILED);
 
         }
     }
@@ -160,7 +160,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
             }
         }catch (Exception e) {
             log.error("breakpointUploadFileRandomAccessFile {}", e.getMessage());
-            throw new ServiceException(ResponseEnum.SHARD_UPLOAD_FAILED);
+            throw new WebUploaderException(ResponseEnum.SHARD_UPLOAD_FAILED);
         }
     }
 
@@ -195,7 +195,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
             }
         }catch (Exception e) {
             log.error("breakpointUploadFileByMappedByteBuffer {}", e.getMessage());
-            throw new ServiceException(ResponseEnum.SHARD_UPLOAD_FAILED);
+            throw new WebUploaderException(ResponseEnum.SHARD_UPLOAD_FAILED);
         }
     }
 
@@ -203,11 +203,11 @@ public class WebuploaderServiceImpl implements WebuploaderService {
     public List<Integer> checkFileMd5(String md5) {
         if (!webuploaderRepository.hasFileUploadStatusByMd5(md5)) {
             log.error("The file has not been uploaded");
-            throw new ServiceException(ResponseEnum.NO_HAVE);
+            throw new WebUploaderException(ResponseEnum.NO_HAVE);
         }
         if (webuploaderRepository.getFileUploadStatusByMd5(md5)) {
             log.error("File already exists");
-            throw new ServiceException(ResponseEnum.IS_HAVE);
+            throw new WebUploaderException(ResponseEnum.IS_HAVE);
         } else {
             String value = webuploaderRepository.getFilByMd5(md5);
             if (StrUtil.isNotBlank(value)) {
@@ -224,7 +224,7 @@ public class WebuploaderServiceImpl implements WebuploaderService {
         }
 
         log.error("MD5 validation failed");
-        throw new ServiceException(ResponseEnum.MD5_VALIDATION_FAILED);
+        throw new WebUploaderException(ResponseEnum.MD5_VALIDATION_FAILED);
     }
 
     /**
